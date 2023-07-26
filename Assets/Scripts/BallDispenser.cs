@@ -87,6 +87,19 @@ public class BallDispenser : MonoBehaviour
 
     void Instantiater()
     {
-            Instantiate(redBall,transform.position,Quaternion.identity,transform);
+        var roll = Random.Range(0, 2);
+        switch (roll)
+        {
+            case 0:
+                Instantiate(redBall, transform.position, Quaternion.identity, transform);
+                break;
+            case 1:
+                Instantiate(blueBall, transform.position, Quaternion.identity, transform);
+                break;
+            default:
+                Debug.Log("default");
+                break;
+
+        }
     }
 }
