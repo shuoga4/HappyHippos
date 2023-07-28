@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -14,38 +15,82 @@ public class PlayerMovement : MonoBehaviour
      * なんか挙動おかしそうだけどやってみる
      * 入ったものを検知するため、一斉に消すためにやっぱり配列使う必要ありそう
      * 
+     * 床にぶつかるともうy軸固定する？
+     * redゾーンに入ってるのに...みたいなことなる
+     * あ、見えない立方体置いてその空間内のときこの判定が起こるようにすればええんでねか
+     * トリガーシステム採用
+     * 
+     * やったこと無いんだけど当たり判定無いボックス置くだけでいいんだっけ
+     * 
+     * listを使ってspace押すと消える挙動を作りたい
      */
     [System.NonSerialized] public int redCounter;
     [System.NonSerialized] public int blueCounter;
     [System.NonSerialized] public int scoreCounter;
     public List<GameObject> ballInFloorList = new();
+    public Material changer;
+    public Material redchanger;
+    public Material bluechanger;
+    public Material redorigin;
+    public Material blueorigin;
+    public TextMeshProUGUI _scorex;
     void Start()
     {
-        
     }
+    /*      triggerenter用
+     *      if (collision.gameObject.CompareTag("Red"))
+           redCounter++;
+       if (collision.gameObject.CompareTag("Blue"))
+           blueCounter++;
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Red"))
-            redCounter++;
-        if (collision.gameObject.CompareTag("blue"))
-            blueCounter++;
-        ballInFloorList.Add(collision.gameObject);
-    }
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Red"))
+
+       ballInFloorList.Add(collision.gameObject);
+       Changer(collision.gameObject); 
+    */
+
+    /*      triggerexit用
+     *         if (collision.gameObject.CompareTag("Red"))
             redCounter--;
         if (collision.gameObject.CompareTag("Blue"))
             blueCounter--;
+
+
+        ballInFloorList.Remove(collision.gameObject);
+        Changer2(collision.gameObject);
+     */
+
+    private void OnTriggerEnter(Collider other)
+    {
+        var othergo = other.gameObject;
+        if (othergo.CompareTag("Red"))
+            redCounter++;
+        if (othergo.CompareTag("Blue"))
+            blueCounter++;
+
+
+        ballInFloorList.Add(othergo);
+        Changer(othergo);
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        var othergo = other.gameObject;
+        if (othergo.CompareTag("Red"))
+            redCounter--;
+        if (othergo.CompareTag("Blue"))
+            blueCounter--;
+
+
+        ballInFloorList.Remove(othergo);
+        Changer2(othergo);
+    }
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKey(KeyCode.Space))
             Getter();
-        
+
+        _scorex.text = "red:" + redCounter + "   blue:" + blueCounter + "   score:" + scoreCounter;
 
     }
     void Getter()
@@ -56,9 +101,30 @@ public class PlayerMovement : MonoBehaviour
         blueCounter = 0;
     }
     //  リストを学ぶために色を変える
-    void Changer()
+    void Changer(GameObject obj)
     {
+        var objmesh = obj.GetComponent<MeshRenderer>();
         //リストの長さ読み出して？foreach使えないんだっけ？中身のゲームオブジェクト一つ一つにアタッチできる文募
+        if(obj.CompareTag("Red"))
+            objmesh.material = redchanger;
+        if (obj.CompareTag("Blue"))
+            objmesh.material = bluechanger;
 
     }
+
+    void Changer2(GameObject obj)
+    {
+        var objmesh = obj.GetComponent<MeshRenderer>();
+        if (obj.CompareTag("Red"))
+            objmesh.material = redorigin;
+        if (obj.CompareTag("Blue"))
+            objmesh.material = blueorigin;
+    }
+    //多分色ごっちゃになるけどええか
+    /*予想通りなったので一旦変えてみる
+     * 色濃くなる演出どうかな
+     * 
+     *
+     * 
+     */
 }
