@@ -24,11 +24,10 @@ public class PlayerMovement : MonoBehaviour
      * 
      * listを使ってspace押すと消える挙動を作りたい
      */
-    [System.NonSerialized] public int redCounter;
-    [System.NonSerialized] public int blueCounter;
+    private int _redCounter;
+    private int _blueCounter;
     [System.NonSerialized] public int scoreCounter;
-    public List<GameObject> ballInFloorList = new();
-    public Material changer;
+    private List<GameObject> _ballInFloorList = new();
     public Material redchanger;
     public Material bluechanger;
     public Material redorigin;
@@ -63,12 +62,12 @@ public class PlayerMovement : MonoBehaviour
     {
         var othergo = other.gameObject;
         if (othergo.CompareTag("Red"))
-            redCounter++;
+            _redCounter++;
         if (othergo.CompareTag("Blue"))
-            blueCounter++;
+            _blueCounter++;
 
 
-        ballInFloorList.Add(othergo);
+        _ballInFloorList.Add(othergo);
         Changer(othergo);
     }
 
@@ -76,12 +75,12 @@ public class PlayerMovement : MonoBehaviour
     {
         var othergo = other.gameObject;
         if (othergo.CompareTag("Red"))
-            redCounter--;
+            _redCounter--;
         if (othergo.CompareTag("Blue"))
-            blueCounter--;
+            _blueCounter--;
 
 
-        ballInFloorList.Remove(othergo);
+        _ballInFloorList.Remove(othergo);
         Changer2(othergo);
     }
     // Update is called once per frame
@@ -90,15 +89,22 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
             Getter();
 
-        _scorex.text = "red:" + redCounter + "   blue:" + blueCounter + "   score:" + scoreCounter;
+        _scorex.text = "red:" + _redCounter + "   blue:" + _blueCounter + "   score:" + scoreCounter;
 
     }
     void Getter()
     {
-        scoreCounter = redCounter * 2;
-        scoreCounter -= blueCounter;
-        redCounter = 0;
-        blueCounter = 0;
+        scoreCounter += _redCounter * 2;
+        scoreCounter -= _blueCounter;
+        _redCounter = 0;
+        _blueCounter = 0;
+
+        foreach(GameObject go in _ballInFloorList)
+        {
+            if (go != null)
+                Destroy(go);
+            continue;
+        }
     }
     //  リストを学ぶために色を変える
     void Changer(GameObject obj)
@@ -121,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
             objmesh.material = blueorigin;
     }
     //多分色ごっちゃになるけどええか
-    /*予想通りなったので一旦変えてみる
+    /* 予想通りなったので一旦変えてみる
      * 色濃くなる演出どうかな
      * 
      *
