@@ -29,27 +29,34 @@ public class EnemyMovement : MonoBehaviour
      * 偽のときon cd
      * on cd 中はgetterしてもgetできない
      * 
+     * toggleSpacePushがtrueのときボールを消さないでほしい
+     * 
      */
     private int _redCounter;
     private int _blueCounter;
     private int _predic;
     private int tick;
-    [System.NonSerialized] private int delay = 1;
-    [System.NonSerialized] private int cooldown = 0;
-    private bool cd;
+    [System.NonSerialized] private int delay = 1; //敵の強さ関連
+    [System.NonSerialized] private int cooldown = 0; // 同上
+    private bool cd; // falseのときon cd
 
     public Material redchanger;
     public Material bluechanger;
     public Material redorigin;
     public Material blueorigin;
+    public Score score;
 
     [System.NonSerialized] public int scoreCounter;
-    private List<GameObject> _ballInFloorList = new();
+    private List<GameObject> _ballInFloorList;
     public TextMeshProUGUI _scorex;
     void Start()
     {
         tick = 0;
         cd = true;
+        _ballInFloorList = new();
+        scoreCounter = 0;
+
+
     }
 
     // Update is called once per frame
@@ -76,17 +83,22 @@ public class EnemyMovement : MonoBehaviour
     }
     void Getter()
     {
-        scoreCounter += _blueCounter * 2;
-        scoreCounter -= _redCounter;
-        _redCounter = 0;
-        _blueCounter = 0;
-
-        foreach (GameObject go in _ballInFloorList)
-        {
-            if (go != null)
-                Destroy(go);
-            continue;
+        if (score.toggleSpacePush != true)
+        { 
+            scoreCounter += _blueCounter * 2;
+            scoreCounter -= _redCounter;
+            _redCounter = 0;
+            _blueCounter = 0;
+        
+        
+            foreach (GameObject go in _ballInFloorList)
+            {
+                if (go != null)
+                    Destroy(go);
+                continue;
+            }
         }
+        
         //ここでcd boolを偽にして、Startcoroutineして何秒後かにそのboolを真にするものの実装、cd boolはどこで使うか
         cd = false;
         StartCoroutine(CoolDownBool());

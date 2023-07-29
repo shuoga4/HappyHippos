@@ -32,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     public Material bluechanger;
     public Material redorigin;
     public Material blueorigin;
+    public Score score;
     public TextMeshProUGUI _scorex;
     void Start()
     {
@@ -94,17 +95,21 @@ public class PlayerMovement : MonoBehaviour
     }
     void Getter()
     {
-        scoreCounter += _redCounter * 2;
-        scoreCounter -= _blueCounter;
-        _redCounter = 0;
-        _blueCounter = 0;
-
-        foreach(GameObject go in _ballInFloorList)
+        if (score.toggleSpacePush != true)
         {
-            if (go != null)
-                Destroy(go);
-            continue;
+            scoreCounter += _redCounter * 2;
+            scoreCounter -= _blueCounter;
+            _redCounter = 0;
+            _blueCounter = 0;
+        
+            foreach (GameObject go in _ballInFloorList)
+            {
+                if (go != null)
+                    Destroy(go);
+                continue;
+            }
         }
+       
     }
     //  リストを学ぶために色を変える
     void Changer(GameObject obj)
