@@ -55,10 +55,12 @@ public class BallDispenser : MonoBehaviour
     public Canvas button;
     [System.NonSerialized] public bool start;
     [System.NonSerialized] public int fixedupdater;
+    [SerializeField] private int delay;
     void Start() 
     {
         Boolfalser();
         fixedupdater = 0;
+        delay = 100;
     }
 
     public void Boolfalser()
@@ -76,7 +78,7 @@ public class BallDispenser : MonoBehaviour
     void FixedUpdate()
     {
         fixedupdater++;
-        if(fixedupdater % 100 == 0)
+        if(fixedupdater % delay == 0)
         {
             if (start)
                 Instantiater();
@@ -92,9 +94,11 @@ public class BallDispenser : MonoBehaviour
         {
             case 0:
                 Instantiate(redBall, transform.position, Quaternion.identity, transform);
+                delay--;
                 break;
             case 1:
                 Instantiate(blueBall, transform.position, Quaternion.identity, transform);
+                delay--;
                 break;
             default:
                 Debug.Log("default");
